@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
+
+
+# Display cental out put device
 import serial
 import time
+
+
 if __name__ == '__main__':
+    print("Display Cental outpust")
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     ser.reset_input_buffer()
     while True:

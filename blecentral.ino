@@ -1,20 +1,9 @@
-/*
-  BLE_Central_Device.ino
-
-  This program uses the ArduinoBLE library to set-up an Arduino Nano 33 BLE Sense 
-  as a central device and looks for a specified service and characteristic in a 
-  peripheral device. If the specified service and characteristic is found in a 
-  peripheral device, the last detected value of the on-board gesture sensor of 
-  the Nano 33 BLE Sense, the APDS9960, is written in the specified characteristic. 
-
-  The circuit:
-  - Arduino Nano 33 BLE Sense. 
-
-  This example code is in the public domain.
+#if 0
+/* BLE_Central_Device.ino
 */
+#endif
 
 #include <ArduinoBLE.h>
-#include <Arduino_APDS9960.h>
 
 const char* deviceServiceUuid = "19b1";
 const char* deviceServiceCharacteristicUuid = "1214";
@@ -91,9 +80,30 @@ void controlPeripheral(BLEDevice peripheral) {
     peripheral.disconnect();
     return;
   }
+  
 
-  BLECharacteristic dataTransferCharacteristic = peripheral.characteristic(deviceServiceCharacteristicUuid);
-  if (!dataTransferCharacteristic) {
+  BLECharacteristic dataTransferCharacteristic = peripheral.characteristic(deviceServiceCharacteristicUuid); 
+  
+  
+  while (peripheral.connected()) {    
+      data = 3; 
+      sendData(peripheral,dataTransferCharacteristic);
+  
+  }
+  Serial.println("- Peripheral device disconnected!");
+}
+
+
+#if 1==3
+/*
+To send data 
+*/
+
+#endif
+
+
+void sendData(BLEDevice peripheral,BLECharacteristic dataTransferCharacteristic){
+   if (!dataTransferCharacteristic) {
     Serial.println("NO data type charx!");
     peripheral.disconnect();
     return;
@@ -101,10 +111,8 @@ void controlPeripheral(BLEDevice peripheral) {
     Serial.println("no writable from peripheral!");
     peripheral.disconnect();
     return;
-  }  
-  
-  while (peripheral.connected()) {    
-      data = 3;      
+  } 
+
       while(data<=125)   {      
         if (data%2 != 0) {      
             Serial.print("* Writing ............ ");
@@ -120,10 +128,30 @@ void controlPeripheral(BLEDevice peripheral) {
     }
     Serial.println("Data Transfer is done!");
     exit(1); 
-  }
-  Serial.println("- Peripheral device disconnected!");
+
 }
 
 
 
+#if 1==4
+/*To receive data
+*/
 
+#endif
+void receiveData(BLEDevice peripheral,BLECharacteristic dataTransferCharacteristic){
+  if (!dataTransferCharacteristic) {
+    Serial.println("NO data type charx!");
+    peripheral.disconnect();
+    return;
+  } else if (!dataTransferCharacteristic.canWrite() ) {
+    Serial.println("no readable from peripheral!");
+    peripheral.disconnect();
+    return;
+  }
+ if (dataTransferCharacteristic.written()) {
+         data = (int)dataTransferCharacteristic.value();
+         Serial.println(data);
+               }
+
+
+}

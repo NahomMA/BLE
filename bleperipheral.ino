@@ -1,18 +1,10 @@
-/*
-  BLE_Peripheral.ino
 
-  This program uses the ArduinoBLE library to set-up an Arduino Nano 33 BLE 
-  as a peripheral device and specifies a service and a characteristic. Depending 
-  of the value of the specified characteristic, an on-board LED gets on. 
-
-  The circuit:
-  - Arduino Nano 33 BLE. 
-
-  This example code is in the public domain.
+#if 1==2
+/*  BLE_Peripheral.ino
 */
+#endif
 
 #include <ArduinoBLE.h>
-
 
 const char* deviceServiceUuid = "19b1";
 const char* deviceServiceCharacteristicUuid = "1214";
@@ -55,10 +47,7 @@ void loop() {
 
     while (central.connected()) {
       data=3;
-      if (dataTransferCharacteristic.written()) {
-         data = (int)dataTransferCharacteristic.value();
-         Serial.println(data);
-               }
+      receiveData();
     }
     
     Serial.println("Disconnected to central device!");
@@ -66,3 +55,49 @@ void loop() {
 }
 
 
+#if 1==3
+/*
+To send data 
+*/
+
+#endif
+
+void sendData(){ 
+  if(dataTransferCharacteristic.read()||dataTransferCharacteristic.written()){
+    Serial.println("possible to write to central");
+  } 
+      while(data<=125)   { 
+        Serial.print("data:  "); 
+        Serial.println(data);    
+        if (data%2 != 0) {      
+            Serial.print(" Writing ............ ");
+            Serial.println(data);
+            dataTransferCharacteristic.writeValue((byte)data);
+            // Serial.println("* Writing .......... done!");
+            data+=1;
+          }
+        else {  
+          data+=1;
+          continue;
+        }       
+    }
+    Serial.println("Data Transfer is done!");
+    exit(1); 
+
+}
+
+
+#if 1==4
+/*To receive data
+*/
+#endif
+
+void receiveData(){
+
+ if (dataTransferCharacteristic.written()) {
+         data = (int)dataTransferCharacteristic.value();
+         Serial.println(data);
+               }
+
+
+}

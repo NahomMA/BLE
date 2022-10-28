@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+
+# Read from the peripheral device
 import serial
 import time
 if __name__ == '__main__':
+    print("Display output from peripheral...")
     ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
     ser.reset_input_buffer()
     while True:
